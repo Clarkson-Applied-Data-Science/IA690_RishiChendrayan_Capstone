@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Folder: {{ folder_path }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; text-align: center; padding: 50px; }
+        .container { background: white; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1); max-width: 1200px; margin: auto; }
+        .nav-buttons { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .nav-buttons a { padding: 10px 15px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; }
+        .nav-buttons a:hover { background: #0056b3; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        th { white-space: normal; min-width: 70px; }
+        .low-edit { background-color: #ffcccc !important; }
+        .small-text { font-size: 12px; color: #555; }
+        ul { text-align:left; margin: 0 0 0 24px; padding: 0; }
+        li { margin-bottom: 8px; }
+        .split-view { display: flex; align-items: flex-start; gap: 24px; margin-top:24px; }
+        .file-pane { flex: 1; background: #f7f7f7; padding: 18px; border-radius: 8px; }
+        .metrics-pane { flex: 2; background: #fff; padding: 18px; border-radius: 8px; box-shadow: 0 0 5px #ccc; }
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="nav-buttons">
+        <a href="{{ url_for('index') }}">⬅ Back to Home</a>
+        {% if parent_path %}
+            <a href="{{ url_for('view_folder', folder_path=parent_path.replace('\\', '/') ) }}">⬅ Go Back</a>
+        {% endif %}
+    </div>
+
+    <h1>Contents of {{ folder_path }}</h1>
+
+    {% if metrics_dict and metrics_dict|length > 1 %}
+        <!-- CLASS VIEW: Table comparing all students -->
+         <div class="table-responsive">
+            <table>
+                <tr>
+                    <th>Student</th>
+                    <th>Edit Count</th>
+                    <th>Distinct Files</th>
+                    <th>Net Growth</th>
+                    <th>Max Size</th>
+                    <th>Min Size</th>
+                    <th>Std Dev</th>
+                    <th>Avg Δ</th>
+                    <th>Largest Δ</th>
+                    <th>Sessions</th>
+                    <th>Edits/Hour</th>
+                    <th>Idle Max</th>
+                    <th>First Edit</th>
+                    <th>Last Edit</th>
+                    <th>Time Elapsed</th>
+                </tr>
+                {% for student in folder_items %}
+                    {% set student_name = student.split('/')[-1] %}
+                    {% set metrics = metrics_dict.get(student_name) %}
+                    <tr>
+                        <td>
+                            <a href="{{ url_for('view_folder', folder_path=(folder_path ~ '/' ~ student_name)) }}">{{ student_name }}</a>
+                        </td>
+                        <td class="edit-count" style="text-align:right;">{{ metrics.edit_count if metrics else '' }}</td>
+                        <td style="text-align:right;">{{ metrics.distinct_files_edited if metrics else '' }}</td>
+                        <td style="text-align:right;">{{ metrics.net_code_growth | int if metrics else '' }}</td>
+                        <td style="text-align:right;">{{ metrics.max_code_size | int if metrics else '' }}</td>
+                        <td style="text-align:right;">{{ metrics.min_code_size | int if metrics else '' }}</td>
+                        <td style="text-align:right;">{{ metrics.stddev_code_size | round(2) if metrics else '' }}</td>
+                        <td style="text-align:right;">{{ metrics.avg_code_diff | round(2) if metrics else '' }}</td>
+                        <td style="text-align:right;">{{ metrics.largest_single_change | int if metrics else '' }}</td>
+                        <td style="text-align:right;">{{ metrics.session_count if metrics else '' }}</td>
+                        <td style="text-align:right;">{{ metrics.edit_frequency_per_hour | round(2) if metrics else '' }}</td>
+                        <td style="text-align:right;">{{ metrics.longest_idle_gap if metrics else '' }}</td>
+                        <td class="small-text">{{ metrics.first_edit if metrics else '' }}</td>
+                        <td class="small-text">{{ metrics.last_edit if metrics else '' }}</td>
+                        <td>{{ metrics.time_elapsed if metrics else '' }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+         </div>
+        
+    {% elif metrics_dict and metrics_dict|length == 1 %}
+        <!-- STUDENT VIEW: Split file list / metrics -->
+        <div class="split-view">
+            <div class="file-pane">
+                <h3>Files & Folders</h3>
+                <ul>
+                    {% for item in folder_items %}
+                        <li>
+                            {% if '.' in item %}
+                                📄 <a href="{{ url_for('view_file', file_path=item.replace('\\', '/') ) }}">{{ item.split('/')[-1] }}</a>
+                            {% else %}
+                                📁 <a href="{{ url_for('view_folder', folder_path=item.replace('\\', '/') ) }}">{{ item.split('/')[-1] }}</a>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="metrics-pane">
+                <h3>Student Metrics</h3>
+                {% set student = metrics_dict.keys()|list|first %}
+                {% set metrics = metrics_dict.get(student) %}
+                {% if metrics %}
+                    <table style="width:100%;margin-bottom:1em;">
+                        <tr><th>Edit Count</th><td>{{ metrics.edit_count }}</td></tr>
+                        <tr><th>Distinct Files Edited</th><td>{{ metrics.distinct_files_edited }}</td></tr>
+                        <tr><th>Net Growth</th><td>{{ metrics.net_code_growth }}</td></tr>
+                        <tr><th>Max Size</th><td>{{ metrics.max_code_size }}</td></tr>
+                        <tr><th>Min Size</th><td>{{ metrics.min_code_size }}</td></tr>
+                        <tr><th>Std Dev</th><td>{{ metrics.stddev_code_size }}</td></tr>
+                        <tr><th>Avg Δ</th><td>{{ metrics.avg_code_diff }}</td></tr>
+                        <tr><th>Largest Δ</th><td>{{ metrics.largest_single_change }}</td></tr>
+                        <tr><th>Sessions</th><td>{{ metrics.session_count }}</td></tr>
+                        <tr><th>Edits/Hour</th><td>{{ metrics.edit_frequency_per_hour }}</td></tr>
+                        <tr><th>Longest Idle Gap</th><td>{{ metrics.longest_idle_gap }}</td></tr>
+                        <tr><th>First Edit</th><td class="small-text">{{ metrics.first_edit }}</td></tr>
+                        <tr><th>Last Edit</th><td class="small-text">{{ metrics.last_edit }}</td></tr>
+                        <tr><th>Time Elapsed</th><td>{{ metrics.time_elapsed }}</td></tr>
+                    </table>
+                {% else %}
+                    <p>No metrics found for this student.</p>
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
+        <p>No files or folders found in this directory.</p>
+    {% endif %}
+</div>
+</body>
+</html>

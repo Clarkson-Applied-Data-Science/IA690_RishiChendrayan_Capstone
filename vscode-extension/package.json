@@ -1,0 +1,85 @@
+{
+  "name": "cu-code",
+  "displayName": "CU Code",
+  "description": "This is Rishi's Capstone Project.",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.100.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "File Logger",
+      "properties": {
+        "fileLogger.logIntervalSeconds": {
+          "type": "number",
+          "default": 10,
+          "minimum": 1,
+          "description": "Interval (in seconds) between log entries."
+        },
+        "fileLogger.maxLogFileSizeMB": {
+          "type": "number",
+          "default": 5,
+          "minimum": 1,
+          "description": "Maximum log file size before rotation (in MB)."
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "extension.showFileLogger",
+        "title": "Show File Logger"
+      },
+      {
+        "command": "extension.exportFileLoggerAudit",
+        "title": "Export File Logger Audit Logs"
+      },
+      {
+        "command": "fileLogger._internalPasteTracker",
+        "title": "Track Paste",
+        "category": "Hidden"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "fileLogger",
+          "title": "File Logger",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "fileLogger": [
+        {
+          "type": "webview",
+          "id": "fileLoggerView",
+          "name": "Logger Status"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.100.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.5.2",
+    "eslint": "^9.25.1"
+  },
+  "dependencies": {
+    "archiver": "^7.0.1"
+  }
+}
