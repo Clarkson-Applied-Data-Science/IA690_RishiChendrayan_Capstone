@@ -12,6 +12,14 @@ This capstone project provides an end-to-end workflow for logging, storing, and 
 - **Flask Backend**: Captures, stores, and serves coding activity and diffs.
 - **VS Code Extension**: Monitors and logs code edits directly from the editor, integrating with the backend for live analytics.
 
+```mermaid
+flowchart LR
+    A[🖥️ VS Code Extension logs activity] --> B[📦 Export log file]
+    B --> C[⬆️ Upload to Moodle LMS]
+    C --> D[⬇️ Instructor downloads]
+    D --> E[📊 Flask App visualizes]
+```
+
 ---
 
 ## ✨ Features
