@@ -152,15 +152,18 @@ This project is licensed under the MIT License.
 
 ## 🙏 Acknowledgments
 
+- Special thanks to Professor Tyler Conlon for inspiring and guiding this project right from our very first brainstorming session. This work would not have been possible without his mentorship and support.
 - Inspired by open source logging and analytics tools
 - Developed as part of IA690 Capstone at Clarkson University
 
 ---
 
-## 📝 Notes
+## 🛠️ Notes
 
-- For deployment, consider using environment variables for configuration (`.env` files).
-- If you have questions or encounter issues, please [open an issue](https://github.com/Clarkson-Applied-Data-Science/IA690_RishiChendrayan_Capstone/issues).
+- **Environment Variables:**  
+  For most users, no extra configuration is needed. Advanced users may customize the Flask app (e.g., port, secret keys) via environment variables placed in a `.env` file (and loaded with a package like `python-dotenv`). This is **optional** and only needed for advanced customization.
+
+- If you have questions or encounter issues, [open an issue](https://github.com/Clarkson-Applied-Data-Science/IA690_RishiChendrayan_Capstone/issues).
 
 ---
 
