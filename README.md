@@ -19,6 +19,13 @@ flowchart LR
     C --> D[⬇️ Instructor downloads]
     D --> E[📊 Flask App visualizes]
 ```
+| Step | Action                                                      |
+|------|-------------------------------------------------------------|
+| 1    | VS Code Extension logs code activity                        |
+| 2    | Student exports log file                                    |
+| 3    | Student uploads log to Moodle LMS                           |
+| 4    | Instructor downloads logs submitted by all students         |
+| 5    | Instructor loads log in Flask app                           |
 
 ---
 
@@ -56,76 +63,71 @@ IA690_RishiChendrayan_Capstone/
 
 ---
 
-## ⚙️ Getting Started
+## 🧩 Component Details
 
-### Prerequisites
+### 1. VS Code Extension (Code Logging & Export)
 
-- **Flask Backend:**  
-  - Python 3.8+  
-  - `pip` for dependency management
+**What it does:**  
+Monitors coding activity (files edited, changes made) in VS Code. Allows you to export a log file for submission.
 
-- **VS Code Extension:**  
-  - [Node.js](https://nodejs.org/) (for packaging if modifying the extension)
-  - [VS Code](https://code.visualstudio.com/)
-  - [VSCE](https://code.visualstudio.com/api/working-with-extensions/publishing-extension) (for packaging, optional)
+**Dependencies:**  
+- [Node.js](https://nodejs.org/) (required)
+- [npm](https://www.npmjs.com/) (Node package manager)
+- [VS Code](https://code.visualstudio.com/) (for running/testing)
+- [vsce](https://code.visualstudio.com/api/working-with-extensions/publishing-extension) (optional, for packaging)
 
----
-
-### 1. Clone the Repository
+#### Setup
 
 ```bash
-git clone https://github.com/Clarkson-Applied-Data-Science/IA690_RishiChendrayan_Capstone.git
-cd IA690_RishiChendrayan_Capstone
+cd vscode-extension
+npm install
 ```
+
+- **Run in development:** open folder in VS Code, press `F5`
+- **Package extension:** `npm install -g vsce && vsce package`
+- **Install extension:**  
+  In VS Code: `Ctrl+Shift+P` → “Install from VSIX” → select your package
+
+- **Export log file:**  
+  Use the export feature in the extension (see the command palette or documentation).
 
 ---
 
-### 2. Set Up and Run the Flask Backend
+### 2. Flask Data Visualization App
+
+**What it does:**  
+Loads and visualizes submitted log files for instructor analysis (view edits, diffs, activity over time).
+
+**Dependencies:**  
+- Python 3.8+
+- [Flask](https://flask.palletsprojects.com/)
+- `pip` (Python package manager)
+- (Recommended: `venv` for virtual environment)
+
+#### Setup
 
 ```bash
 cd flask-backend
 python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scriptsctivate
+source venv/bin/activate      # On Windows: venv\Scriptsctivate
 pip install flask
 python app.py
 ```
 
-The Flask app will run by default on [http://localhost:5000](http://localhost:5000).
+App runs at: [http://localhost:5000](http://localhost:5000)
 
----
-
-### 3. Install and Run the VS Code Extension
-
-#### If modifying/building the extension:
-
-```bash
-cd ../vscode-extension
-npm install
-```
-
-#### To install the extension for local testing:
-
-- Open the `vscode-extension` folder in VS Code.
-- Press `F5` to launch an Extension Development Host.
-
-Or, to package and install:
-
-```bash
-npm install -g vsce
-vsce package
-# This creates a .vsix file. In VS Code, press Ctrl+Shift+P, select 'Install from VSIX...' and choose the file.
-```
+- **Load log file:**  
+  Use the app's upload feature in the dashboard.
 
 ---
 
 ## 🖥️ Usage
 
-1. **Start the Flask backend.**  
-2. **Install and activate the VS Code extension.**  
-3. Edit code as usual in VS Code. The extension logs activity, which you can view in the Flask web dashboard.
-
-- Access the dashboard at [http://localhost:5000](http://localhost:5000)
-- Browse activity by file, folder, or diff views
+- **Start the Flask backend**
+- **Install and activate the VS Code extension**
+- Edit code in VS Code (extension logs activity)
+- Export log file and submit via Moodle
+- Instructor downloads and loads log file into Flask app dashboard
 
 ---
 
